@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- xml与注解混合配置 -->
+
+	<!-- 加入包的扫描，以实例化bean和Controller -->
+	<context:component-scan base-package="com.yc" />
+	
+	<aop:aspectj-autoproxy />
+	
+	<!-- 读取数据库连接文件db.properties
+	  		spring的容器启动时，会以流的形式读取db.properties的配置信息
+	   -->
+	<context:property-placeholder location="classpath*:db.properties"/>
+	<!-- spring整合mybatis/hibernate/jdbc/jpa的配置思路：
+	  			1.配置数据源（数据连接池）
+	  			2.如果使用了dao的框架，都要求配置连接会话的工厂
+	  			3.由工厂创建会话，注入到dao层中使用的模板类
+	   -->
+	  <!-- 使用dbcp2配置数据库连接池 -->
+	  <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	      <property name="driverClassName" value="${jdbc.driver}"/>
+	      <property name="url" value="${jdbc.url}"/>
+	      <property name="username" value="${jdbc.username}"/>
+	      <property name="password" value="${jdbc.password}"/>
+	      <!-- 还有其他优化配置 -->
+	  </bean>
+	  
+	  <!-- 取得sqlSessionFactory -->
+	  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  	<property name="dataSource" ref="dataSource"></property>
+	  	
+	  	<!-- 读取mapper的配置文件信息 -->
+	  	<property name="mapperLocations" value="classpath*:com/yc/mapper/*.xml">
+	  	
+	  	</property>
+	  	
+	  	<!-- 主要用来配置mybatis中的configuration中的settings配置 -->
+	  	<property name="configurationProperties">
+	  		<props>
+	  			<prop key="logImpl">LOG4J</prop>
+	  		</props>
+	  	</property> 
+	  	
+	  	<!-- 别名的包的位置 -->
+	  	<property name="typeAliasesPackage" value="com.yc.bean">
+	  		
+	  	</property>
+	  	
+	  </bean>
+
+	<!-- 事务管理器    mybatis使用标准的jdbc事务管理器 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

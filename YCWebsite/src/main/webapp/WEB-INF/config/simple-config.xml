@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 以后的项目请写入多个配置文件，好处是simple-config.xml中配置springmvc的配置，beans.xml中配置dao,biz,切面，事物 -->
+
+	<!-- 导入beans.xml -->
+	<import resource="classpath*:beans.xml"/>
+
+	<!-- 使用试图解析器，简化view路径-->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!-- 启用mvc的注解解析器 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- 这些静态资源不会被拦截 -->
+	<mvc:resources location="/css/" mapping="/css/*"></mvc:resources>
+	<mvc:resources location="/js/" mapping="/js/*"></mvc:resources>
+	<mvc:resources location="/images/" mapping="/images/*"></mvc:resources>
+	<mvc:resources location="/files/" mapping="/files/*"></mvc:resources>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="20000000" />
+	</bean>
+
+</beans>
