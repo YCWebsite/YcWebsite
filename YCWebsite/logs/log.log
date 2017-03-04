@@ -1,0 +1,7 @@
+2017-03-04 15:41:27  [ main:0 ] - [ INFO ]  Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@d134d0: startup date [Sat Mar 04 15:41:27 CST 2017]; root of context hierarchy
+2017-03-04 15:41:28  [ main:585 ] - [ INFO ]  Loading XML bean definitions from class path resource [beans.xml]
+2017-03-04 15:41:30  [ main:3100 ] - [ INFO ]  Loading properties file from URL [file:/E:/gitworkspace/ycGitWord/YcWebsite/YCWebsite/target/classes/db.properties]
+2017-03-04 15:41:30  [ main:3112 ] - [ WARN ]  Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Invalid bean definition with name 'dataSource' defined in class path resource [beans.xml]: Could not resolve placeholder 'jdbc.driver' in string value "${jdbc.driver}"; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'jdbc.driver' in string value "${jdbc.driver}"
+2017-03-04 15:42:21  [ main:0 ] - [ INFO ]  Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@1264666: startup date [Sat Mar 04 15:42:21 CST 2017]; root of context hierarchy
+2017-03-04 15:42:22  [ main:168 ] - [ INFO ]  Loading XML bean definitions from class path resource [beans.xml]
+2017-03-04 15:42:23  [ main:1425 ] - [ INFO ]  Loading properties file from URL [file:/E:/gitworkspace/ycGitWord/YcWebsite/YCWebsite/target/classes/db.properties]
