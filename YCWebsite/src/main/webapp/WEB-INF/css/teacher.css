@@ -1,0 +1,29 @@
+/*专家师资*/
+.zjsz{
+    margin: 20px 16px 0px 16px;
+}
+
+.zjsz dl{
+    font-size: 14px;
+    border-bottom: 1px solid #EAEAEA;
+    height:152px;
+    margin-bottom: 12px;
+}
+
+.zjsz dl dd{
+    float:left;
+}
+
+.zjsz dl .teacher_text{
+    margin-left:13px;
+}
+
+.zjsz dl .teacher_text a{
+    color: #03447C;
+}
+
+
+.zjsz dd img{
+    width:129px;
+    height:140px;
+}

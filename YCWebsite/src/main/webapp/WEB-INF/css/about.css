@@ -1,0 +1,30 @@
+
+
+/*联系我们*/
+.aboutMe{
+    margin:20px 16.5px 0px 16.5px;
+
+}
+
+.aboutMe h3{
+    text-align: center;
+}
+
+.about_title{
+    height: 40px;
+    font-size: 12px;
+    line-height: 40px;
+    color: #989898;
+    text-align: center !important;
+}
+
+.aboutMe p{
+    text-indent: 2em;
+    line-height: 26px;
+    padding-bottom: 29px;
+    font-family: "Microsoft Yahei";
+    font-size: 14px;
+    color: #565656;
+    text-align: left;
+}
+
