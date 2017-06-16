@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.mapper.CoursesMapper">
+
+<select id="findByPages" resultType="Courses" parameterType="java.lang.Integer">
+	select cs_id,cs_name,cs_namePic,cs_pic,cs_version,cs_text from courses  order by cs_id desc limit #{start},#{end} 
+</select>
+	
+<!-- 获取总页数-->
+<select id="getTotalPage" parameterType="Courses" resultType="java.lang.Integer">
+	select ceil(count(1)/${pageSize}) tp from courses
+</select>  
+	
+<!-- 获取总条数-->
+<select id="getTotalSize" resultType="java.lang.Integer">
+	select count(*) from courses
+</select>
+
+
+
+<!-- 添加职位 -->
+<insert id="addCourses"  parameterType="Courses" >
+		insert into courses(cs_name,cs_namePic,cs_pic,cs_version,cs_text) 
+		values (#{cs_name},#{cs_namePic},#{cs_pic},#{cs_version},#{cs_text})
+</insert>
+<!-- 查找 -->
+<select id="findCourses" resultType="Courses" resultMap="CoursesResultMap">
+		select cs_id,cs_name,cs_namePic,cs_pic,cs_version,cs_text from courses
+		<trim prefix="where" suffixOverrides="and">
+			<if test="cs_id!=null">
+				cs_id=#{cs_id} and
+			</if>
+			<if test="cs_name!=null">
+				cs_name=#{cs_name} and
+			</if>
+			<if test="cs_version!=null">
+				cs_version=#{cs_version} and
+			</if>
+		</trim>
+</select>
+<!-- 修改 -->
+<update id="updateCourses" parameterType="Courses">
+		update courses
+		<trim prefix="set" suffixOverrides=",">
+			<if test="cs_name!=null and cs_name!=''">
+				cs_name=#{cs_name},
+			</if>
+			<if test="cs_namePic!=null and cs_namePic!=''">
+				cs_namePic=#{cs_namePic},
+			</if>
+			<if test="cs_pic!=null and cs_pic!=''">
+				cs_pic=#{cs_pic},
+			</if>
+			<if test="cs_version!=null and cs_version!=''">
+				cs_version=#{cs_version},
+			</if>
+			<if test="cs_text!=null and cs_text!=''">
+				cs_text=#{cs_text},
+			</if>
+		</trim>
+		<where>
+			<if test="cs_id!=null">
+				cs_id=#{cs_id}
+			</if>
+		</where>
+	</update>
+
+	
+	<delete id="deleteCoursesById" parameterType="java.util.List">
+		delete from courses where cs_id in 
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.cs_id}
+		</foreach>
+	</delete>
+	
+	
+<resultMap type="com.yc.bean.Courses" id="CoursesResultMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="cs_id" column="cs_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="cs_name" column="cs_name"/>
+		<result property="cs_namePic" column="cs_namePic"/>
+		<result property="cs_pic" column="cs_pic"/>
+		<result property="cs_version" column="cs_version"/>
+		<result property="cs_text" column="cs_text"/>
+	</resultMap>
+
+</mapper>

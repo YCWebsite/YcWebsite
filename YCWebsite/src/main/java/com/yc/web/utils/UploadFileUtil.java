@@ -20,6 +20,7 @@ public class UploadFileUtil {
 	 * @param  picProjectUrl  : 图片服务器的url   http://localhost:8080/uploadBookImages/
 	 * @return
 	 */
+	//多文件上传
 	public static Map<String, UploadFile> uploadFile(HttpServletRequest request, List<MultipartFile> files, String picRootName ) {
 		Map<String, UploadFile> map = new HashMap<String, UploadFile>();
 		if (files != null && files.size() > 0) {
@@ -42,7 +43,6 @@ public class UploadFileUtil {
 					String saveDir=picFile.getAbsolutePath()+getNowDateStr();
 					String newFilePath=saveDir+newfilename;
 					String newFileUrl= picBasePath+getNowDateStr()+newfilename;
-					
 					File saveDirFile=new File( saveDir);
 					
 					if (!saveDirFile.exists()) {
@@ -67,6 +67,56 @@ public class UploadFileUtil {
 					e.printStackTrace();
 				}
 
+			}
+		}
+		return map;
+	}
+	
+	//单文件上传
+	public static Map<String, UploadFile> uploadFile(HttpServletRequest request, MultipartFile file, String picRootName ) {
+		Map<String, UploadFile> map = new HashMap<String, UploadFile>();
+		if (file != null && !"".equals(file)) {
+			
+			File webappsfile=new File( request.getSession().getServletContext().getRealPath(  "/"     )).getParentFile();
+			//图片保存的服务器位置
+			File picFile=new File(  webappsfile, picRootName);
+			//构建图片服务器的url地址
+			String picBasePath =  request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/"+picRootName ;
+			
+			try {
+				String originalFilename = file.getOriginalFilename();
+				
+				if(  file.isEmpty() ){
+					return null;
+				}else{
+					// 生成新文件名,与时间相关
+					String newfilename = getUniqueFileName()+ originalFilename.substring(originalFilename.lastIndexOf("."));
+					String saveDir=picFile.getAbsolutePath()+getNowDateStr();
+					String newFilePath=saveDir+newfilename;
+					String newFileUrl= picBasePath+getNowDateStr()+newfilename;
+					
+					File saveDirFile=new File( saveDir);
+					
+					if (!saveDirFile.exists()) {
+						saveDirFile.mkdirs();
+					}
+
+					File imageFile = new File(newFilePath);
+
+					UploadFile uploadFile = new UploadFile();
+					uploadFile.contentType = file.getContentType();
+					uploadFile.size = file.getSize();
+					uploadFile.originalFileName = originalFilename;
+					uploadFile.newFileName = newfilename;
+					uploadFile.newFilePath=newFilePath;
+					uploadFile.newFileUrl=newFileUrl;
+
+					map.put(originalFilename, uploadFile);
+
+					file.transferTo(imageFile);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return map;

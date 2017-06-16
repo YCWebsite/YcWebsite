@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.mapper.JobDetailsMapper">
+
+	<!-- <cache type="com.yc.dao.redis.cache"></cache>--> 
+	<cache eviction="FIFO" flushInterval="60000" size="2048" readOnly="true"></cache>
+	
+	  <resultMap type="JobDetails" id="jobDetails">
+		<id column="jd_id" property="jd_id"/>
+		<result column="jd_pic" property="jd_pic"/>
+		<result column="jd_name" property="jd_name"/>
+		<result column="jd_salary" property="jd_salary"/>
+		<result column="jd_emptime" property="jd_emptime"/>
+		<result column="jd_company" property="jd_company"/>
+		<result column="jd_school" property="jd_school"/>
+		<result column="jd_profession" property="jd_profession"/>
+		<result column="todoa" property="todoa"/>
+		<result column="todob" property="todob"/>
+	</resultMap> 
+	<select id="findJobDetails" resultType="JobDetails" parameterType="JobDetails">
+		select jd_id,jd_pic,jd_name,jd_salary,jd_emptime,jd_company,jd_school,jd_profession
+		from JobDetails where 1=1
+		<if test="jd_id!=null">
+			and  jd_id = #{jd_id}
+		</if>
+		<!--  <if test="minSalary!=null and maxSalary!=null">
+			and jd_salary between #{minSalary} and #{maxSalary}
+		</if> -->
+	</select>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="JobDetails" parameterType="JobDetails">
+		select jd_id,jd_pic,jd_name,jd_salary,jd_emptime,jd_company,jd_school,jd_profession
+		from JobDetails where 1=1
+			<choose>
+				<when test="minSalary!=null and maxSalary!=null">
+					and jd_salary between #{minSalary} and #{maxSalary}
+				</when>
+				<when test="startTime!=null and endTime!=null">
+					and jd_emptime between #{startTime} and #{endTime}
+				</when>
+				<when test="start!=null and end!=null">
+					order by jd_id desc limit #{start},#{end} 
+				</when>
+				<otherwise>
+					
+				</otherwise>
+			</choose>
+	</select>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="JobDetails" resultType="java.lang.Integer">
+		select ceil(count(1)/${pageSize}) tp from JobDetails
+	</select>  
+	
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from JobDetails
+	</select>
+	
+	<insert id="addJobDetails"  parameterType="JobDetails">
+		insert into jobdetails(jd_pic,jd_name,jd_salary,jd_emptime,jd_company,jd_school,
+		jd_profession,todoa,todob) values(#{jd_pic},#{jd_name},#{jd_salary},#{jd_emptime},
+		#{jd_company},#{jd_school},#{jd_profession},#{todoa},#{todob})
+	</insert>
+	
+	<update id="updateJobDetailsByJbId" parameterType="JobDetails">
+		update jobDetails set 
+		<if test="jd_pic!=null and jd_pic!=''">
+			jd_pic=#{jd_pic},
+		</if>
+		<if test="jd_emptime!=null and jd_emptime!=''">
+			jd_emptime=#{jd_emptime},
+		</if>
+		jd_name=#{jd_name},jd_salary=#{jd_salary},
+		jd_company=#{jd_company},jd_school=#{jd_school},
+		jd_profession=#{jd_profession},todoa=#{todoa},todob=#{todob} where jd_id=#{jd_id}
+	</update>
+	
+	<delete id="deleteManyJobDetails" parameterType="java.util.List">
+		delete from JobDetails where jd_id in
+		<foreach collection="list" item="objs" index="index" open="(" close=")" separator=",">
+				#{objs.jd_id}
+		</foreach>
+	</delete>
+</mapper>

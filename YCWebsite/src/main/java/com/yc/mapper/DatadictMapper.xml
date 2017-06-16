@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yc.mapper.DatadictMapper" >
+  
+	<select id="selectDataByType" resultMap="datadictMap" parameterType="java.lang.String">
+		select d_id,d_type,d_desc from datadict where d_type=#{d_type}
+	</select>  	
+  	<resultMap id="datadictMap" type="Datadict">
+  		<!-- id表示配置的是数据表中主键的属性 -->
+		<id column="d_id" property="d_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result column="d_type" property="d_type"/>
+		<result column="d_desc" property="d_desc"/>
+	</resultMap>
+	
+	<select id="selectMainMenu" resultMap="datadictMap" parameterType="java.lang.String">
+		select d_id,d_type,d_desc from datadict where d_id like 'c%'
+	</select> 
+	
+	<update id="updateDataByType" parameterType="Datadict">
+		update datadict set d_desc=#{d_desc} where d_type=#{d_type}
+	</update>
+  
+</mapper>

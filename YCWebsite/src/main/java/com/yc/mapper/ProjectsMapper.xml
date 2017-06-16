@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.yc.mapper.ProjectsMapper">  
+	
+	<!-- 加入二级缓存 -->
+	<cache eviction="FIFO" flushInterval="60000" size="2048" readOnly="true"></cache>
+	<!-- 加入redis缓存 -->
+	<!-- 	<cache type="com.yc.redis.RedisCache"></cache> -->
+
+	<select id="selectAllProjects" resultType="Projects" resultMap="projectsMap">    
+		select p_id,p_name,p_pic,p_developer,p_time,p_addr from projects
+		<if test="p_id!=null">
+			where p_id=#{p_id}
+		</if>
+	</select> 
+	<resultMap type="Projects" id="projectsMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="p_id" column="p_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="p_name" column="p_name"/>
+		<result property="p_pic" column="p_pic"/>
+		<result property="p_developer" column="p_developer"/>
+		<result property="p_time" column="p_time"/>
+		<result property="p_addr" column="p_addr"/>
+	</resultMap>
+	
+	<insert id="addProjects" parameterType="Projects">
+		insert into projects(p_name,p_pic,p_developer,p_time,p_addr) values(#{p_name},#{p_pic},#{p_developer},#{p_time},#{p_addr})
+	</insert>
+	
+	<update id="updateProjectsById" parameterType="Projects">
+		update projects set p_name=#{p_name},
+		<if test="p_pic!='' and p_pic!=null">
+			p_pic=#{p_pic},
+		</if>
+		p_developer=#{p_developer},p_time=#{p_time},p_addr=#{p_addr} where p_id=#{p_id}
+	</update>
+	
+	<delete id="deleteProjectsById" parameterType="java.util.List">
+		delete from projects where p_id in 
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.p_id}
+		</foreach>
+	</delete>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="Projects" parameterType="java.lang.Integer">
+		select p_id,p_name,p_pic,p_developer,p_time,p_addr from projects order by p_id desc limit #{start},#{end} 
+	</select>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="Projects" resultType="java.lang.Integer">
+		select ceil(count(1)/${pageSize}) tp from projects
+	</select>  
+	
+	<!-- 获取总条数-->
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from projects
+	</select>
+</mapper>
+

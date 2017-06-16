@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import com.yc.dao.BaseDao;
 
@@ -40,48 +39,48 @@ public class BaseDaoMybatisImpl<T> extends SqlSessionDaoSupport implements BaseD
 	}
 
 	@Override
-	public void update(T t, String sqlId) {
-		super.getSqlSession().update(getMapperId(t, sqlId),t);
+	public int update(T t, String sqlId) {
+		return getSqlSession().update(getMapperId(t, sqlId),t);
 	}
 
 	@Override
-	public void update(T t, Map map, String sqlId) {
-		super.getSqlSession().update(getMapperId(t, sqlId),map);
+	public int update(T t, Map map, String sqlId) {
+		return getSqlSession().update(getMapperId(t, sqlId),map);
 	}
 
 	@Override
-	public void updateMany(T t, List list, String sqlId) {
-		super.getSqlSession().update(getMapperId(t, sqlId),list);
+	public int updateMany(T t, List list, String sqlId) {
+		return getSqlSession().update(getMapperId(t, sqlId),list);
 	}
 
 	@Override
-	public void add(T t, String sqlId) {
-		super.getSqlSession().insert(getMapperId(t, sqlId),t);
+	public int add(T t, String sqlId) {
+		return getSqlSession().insert(getMapperId(t, sqlId),t);
 	}
 
 	@Override
-	public void add(T t, Map map, String sqlId) {
-		super.getSqlSession().insert(getMapperId(t, sqlId),map);
+	public int add(T t, Map map, String sqlId) {
+		return getSqlSession().insert(getMapperId(t, sqlId),map);
 	}
 
 	@Override
-	public void AddMany(T t, List list, String sqlId) {
-		super.getSqlSession().insert(getMapperId(t, sqlId),list);
+	public int AddMany(T t, List list, String sqlId) {
+		return getSqlSession().insert(getMapperId(t, sqlId),list);
 	}
 
 	@Override
-	public void delete(T t, String sqlId) {
-		super.getSqlSession().delete(getMapperId(t, sqlId),t);
+	public int delete(T t, String sqlId) {
+		return getSqlSession().delete(getMapperId(t, sqlId),t);
 	}
 
 	@Override
-	public void delete(T t, Map map, String sqlId) {
-		super.getSqlSession().delete(getMapperId(t, sqlId),map);
+	public int delete(T t, Map map, String sqlId) {
+		return getSqlSession().delete(getMapperId(t, sqlId),map);
 	}
 
 	@Override
-	public void deleteMany(T t, List list, String sqlId) {
-		super.getSqlSession().delete(getMapperId(t, sqlId),list);
+	public int deleteMany(T t, List list, String sqlId) {
+		return getSqlSession().delete(getMapperId(t, sqlId),list);
 	}
 
 	@Override

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.yc.mapper.StudentsMapper">  
+	
+	<!-- 加入二级缓存 -->
+	<cache eviction="FIFO" flushInterval="60000" size="2048" readOnly="true"></cache>
+	<!-- 加入redis缓存 -->
+	<!-- 	<cache type="com.yc.redis.RedisCache"></cache> -->
+
+	<select id="selectAllStudents" resultType="Students" resultMap="studentsMap">    
+		select s_id,s_name,s_tel,s_direction,s_time,s_status from students
+		<if test="s_status!=null">
+			where s_status=#{s_status}
+		</if>
+		order by s_time desc
+	</select> 
+	<select id="selectStudentsById" resultType="Students" resultMap="studentsMap">    
+		select s_name,s_tel from students where s_id=#{s_id}
+	</select> 
+	<resultMap type="Students" id="studentsMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="s_id" column="s_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="s_tel" column="s_tel"/>
+		<result property="s_direction" column="s_direction"/>
+		<result property="s_time" column="s_time"/>
+		<result property="s_status" column="s_status"/>
+	</resultMap>
+	
+	<insert id="addStudents" parameterType="Students">
+		insert into students(s_name,s_tel,s_direction,s_time) values(#{s_name},#{s_tel},#{s_direction},now())
+	</insert>
+	
+	<update id="updateStudentsById" parameterType="Students">
+		update students set s_tel=#{s_tel},s_status=#{s_status} where s_id=#{s_id}
+	</update>
+	
+	<delete id="deleteStudentsById" parameterType="java.util.List">
+		delete from students where s_id in
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.s_id}
+		</foreach>
+	</delete>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="Students" parameterType="java.lang.Integer">
+		select s_id,s_name,s_tel,s_direction,s_time,s_status from students where 1=1 
+		<choose>
+			<when test="s_status!=null">
+				and s_status=#{s_status}
+			</when>
+			<otherwise>
+				order by s_id desc limit #{start},#{end} 
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="Students" resultType="java.lang.Integer">
+		select ceil(count(1)/${pageSize}) tp from students
+	</select>  
+	
+	<!-- 获取总条数-->
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from students
+	</select>
+	
+</mapper>
+

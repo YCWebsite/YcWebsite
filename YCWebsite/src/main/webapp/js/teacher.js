@@ -1,4 +1,23 @@
 $(function() {
+	var width=$(window).width();
+    var height=$(window).height();
+    var yeheight=$(document).height();
+    $("#RecruitTable").css("height",yeheight);
+    $("#login_btn").click(function () {
+        $("#RecruitTable").show();
+    });
+    $("#close").click(function () {
+        $("#RecruitTable").hide();
+    });
+
+    $(window).scroll(function () {
+        var scrolltop = $(window).scrollTop();
+        $("#RecruitTable_div").css("top",scrolltop+(height-400)/2);
+    });
+
+    $("#RecruitTable_div").css("left",(width-800)/2);
+    $("#RecruitTable_div").css("right",(width-800)/2);
+	
     $("img").lazyload({
         effect: "fadeIn",
         threshold: 200

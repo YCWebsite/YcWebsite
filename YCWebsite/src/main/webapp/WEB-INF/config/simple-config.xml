@@ -16,21 +16,30 @@
 	<!-- 导入beans.xml -->
 	<import resource="classpath*:beans.xml"/>
 
-	<!-- 使用试图解析器，简化view路径-->
-	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<!-- 加入视图解析器 简化view路径 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/" />
-		<property name="suffix" value=".jsp" />
+		<property name="suffix" value=".jsp"></property>
+		<property name="order" value="3"></property>
 	</bean>
+	<bean id="viewResolver1"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="com.yc.web.utils.JspResourceView"></property>
+		<property name="prefix" value="/jsp/" />
+		<property name="suffix" value=".jsp"></property>
+		<property name="order" value="2"></property>
+	</bean>
+	
 	
 	<!-- 启用mvc的注解解析器 -->
 	<mvc:annotation-driven></mvc:annotation-driven>
-	<!-- 这些静态资源不会被拦截 -->
+	<!-- 这些静态资源不会被拦截 
 	<mvc:resources location="/css/" mapping="/css/*"></mvc:resources>
 	<mvc:resources location="/js/" mapping="/js/*"></mvc:resources>
 	<mvc:resources location="/backcss/" mapping="/backcss/*"></mvc:resources>
 	<mvc:resources location="/backjs/" mapping="/backjs/*"></mvc:resources>
 	<mvc:resources location="/images/" mapping="/images/*"></mvc:resources>
-	<mvc:resources location="/files/" mapping="/files/*"></mvc:resources>
+	<mvc:resources location="/files/" mapping="/files/*"></mvc:resources>-->
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="20000000" />

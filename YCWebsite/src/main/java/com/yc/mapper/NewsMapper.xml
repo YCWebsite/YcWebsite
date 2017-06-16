@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.yc.mapper.NewsMapper">  
+	
+	<!-- 加入二级缓存 -->
+	<cache eviction="FIFO" flushInterval="60000" size="2048" readOnly="true"></cache>
+	<!-- 加入redis缓存 -->
+	<!-- 	<cache type="com.yc.redis.RedisCache"></cache> -->
+
+	<select id="selectAllNews" resultType="News" resultMap="newsMap">    
+		select n_id,n_title,n_content,n_click,n_time,n_sort,n_reportor from news	
+		<if test="n_id!=null">
+			where n_id=#{n_id}
+		</if>
+		 order by n_sort desc
+	</select> 
+	<select id="selectCheckNews" resultType="News" resultMap="newsMap">    
+		select n_id,n_title,n_content,n_click,n_time,n_sort,n_reportor from news	
+		<if test="n_content!=null">
+			where n_content like #{n_content}
+		</if>
+	</select> 
+	<resultMap type="News" id="newsMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="n_id" column="n_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="n_title" column="n_title"/>
+		<result property="n_content" column="n_content"/>
+		<result property="n_click" column="n_click"/>
+		<result property="n_time" column="n_time"/>
+		<result property="n_sort" column="n_sort"/>
+		<result property="n_reportor" column="n_reportor"/>
+	</resultMap>
+	
+	<insert id="addNews" parameterType="News">
+		insert into news(n_title,n_content,n_sort,n_reportor) values(#{n_title},#{n_content},#{n_sort},#{n_reportor})
+	</insert>
+	
+	<update id="updateNewsById" parameterType="News">
+		update news set n_title=#{n_title},n_content=#{n_content},n_reportor=#{n_reportor},n_sort=#{n_sort} where n_id=#{n_id}
+	</update>
+	
+	<delete id="deleteNewsById" parameterType="java.util.List">
+		delete from news where n_id in 
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.n_id}
+		</foreach>
+	</delete>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="News" parameterType="java.lang.Integer">
+		select n_id,n_title,n_content,n_click,n_time,n_sort,n_reportor from news order by n_sort desc limit #{start},#{end} 
+	</select>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="News" resultType="java.lang.Integer">
+		select ceil(count(1)/${pageSize}) tp from news
+	</select> 
+	
+	<!-- 获取总条数-->
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from news
+	</select>
+	
+</mapper>
+

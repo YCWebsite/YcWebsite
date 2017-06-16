@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.mapper.SysUsersMapper">
+
+	<!-- <cache type="com.yc.dao.redis.cache"></cache>--> 
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"></cache>
+	
+	<select id="login" resultType="SysUsers" parameterType="SysUsers">
+		select u_id,u_name,u_password from users where u_name=#{u_name} and u_password=#{u_password}
+	</select>
+	
+	
+</mapper>

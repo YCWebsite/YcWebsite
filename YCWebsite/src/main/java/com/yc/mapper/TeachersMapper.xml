@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.mapper.TeachersMapper">
+<!-- 分页 -->
+<select id="findByPagesTeachers" resultType="Teachers" parameterType="java.lang.Integer">
+	select t_id,t_title,t_name,t_job,t_motto,t_skill,r_id,t_pic,todoa from teachers where r_id=1 order by t_id desc limit #{start},#{end} 
+</select>
+
+<select id="findByPagesTeam" resultType="Teachers" parameterType="java.lang.Integer">
+	select t_id,t_title,t_name,t_job,t_motto,t_skill,r_id,t_pic,todoa from teachers where r_id=2 order by t_id desc limit #{start},#{end} 
+</select>
+	
+<!-- 获取总页数-->
+<select id="getTotalPage" parameterType="Teachers" resultType="java.lang.Integer">
+	select ceil(count(1)/${pageSize}) tp from teachers
+</select>  
+	
+<!-- 获取老师总条数-->
+<select id="getTotalSize1" resultType="java.lang.Integer">
+	select count(*) from teachers where r_id=1
+</select>
+
+<!-- 获取管理总条数-->
+<select id="getTotalSize2" resultType="java.lang.Integer">
+	select count(*) from teachers where r_id=2
+</select>
+
+<!-- 添加老师 -->
+<insert id="addTeachers"  parameterType="Teachers" >
+		insert into teachers(t_title,t_name,t_job,t_motto,t_skill,t_pic,r_id) 
+		values (#{t_title},#{t_name},#{t_job},#{t_motto},#{t_skill},#{t_pic},1)
+</insert>
+<!-- 添加管理团队 -->
+<insert id="addTeam"  parameterType="Teachers" >
+		insert into teachers(t_name,t_job,t_skill,t_pic,r_id) 
+		values (#{t_name},#{t_job},#{t_skill},#{t_pic},2)
+</insert>
+<!-- 查找 老师-->
+<select id="findTeachers" resultType="Teachers" resultMap="TeachersResultMap">
+		select t_id,t_title,t_name,t_job,t_motto,t_skill,r_id,t_pic,todoa from teachers where r_id=1
+			<if test="t_id!=null">
+				and t_id=#{t_id} 
+			</if>
+			<if test="t_name!=null">
+			 and t_name=#{t_name} 
+			</if>
+</select>
+
+<!-- 查找管理-->
+<select id="findTeam" resultType="Teachers" resultMap="TeachersResultMap">
+		select t_id,t_title,t_name,t_job,t_motto,t_skill,r_id,t_pic,todoa from teachers where r_id=2
+			<if test="t_id!=null">
+				and t_id=#{t_id} 
+			</if>
+			<if test="t_name!=null">
+				 and t_name=#{t_name}
+			</if>
+</select>
+<!-- 修改 -->
+<update id="updateTeachers" parameterType="Teachers">
+		update teachers
+		<trim prefix="set" suffixOverrides=",">
+			<if test="t_title!=null and t_title!=''">
+				t_title=#{t_title},
+			</if>
+			<if test="t_name!=null and t_name!=''">
+				t_name=#{t_name},
+			</if>
+			<if test="t_job!=null and t_job!=''">
+				t_job=#{t_job},
+			</if>
+			<if test="t_motto!=null and t_motto!=''">
+				t_motto=#{t_motto},
+			</if>
+			<if test="t_skill!=null and t_skill!=''">
+				t_skill=#{t_skill},
+			</if>
+			<if test="t_pic!=null and t_pic!=''">
+				t_pic=#{t_pic},
+			</if>
+		</trim>
+		<where>
+			<if test="t_id!=null">
+				t_id=#{t_id}
+			</if>
+		</where>
+	</update>
+
+	
+	<delete id="deleteTeachersById" parameterType="java.util.List">
+		delete from teachers where t_id in 
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.t_id}
+		</foreach>
+	</delete>
+	
+	
+<resultMap type="com.yc.bean.Teachers" id="TeachersResultMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="t_id" column="t_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="t_title" column="t_title"/>
+		<result property="t_name" column="t_name"/>
+		<result property="t_job" column="t_job"/>
+		<result property="t_motto" column="t_motto"/>
+		<result property="t_skill" column="t_skill"/>
+		<result property="r_id" column="r_id"/>
+		<result property="t_pic" column="t_pic"/>
+		<result property="todoa" column="todoa"/>
+	</resultMap>
+
+</mapper>

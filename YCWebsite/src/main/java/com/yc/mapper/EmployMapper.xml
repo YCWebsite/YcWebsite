@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yc.mapper.EmployMapper">
+
+	<!-- <cache type="com.yc.dao.redis.cache"></cache>
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"></cache>--> 
+	
+	<select id="findEmploy" resultType="Employ">
+		select e_id,e_position,e_validtime,e_amount,e_salary,e_detail,e_addr,todoa from Employ 
+		<if test="e_id!=null">
+			where e_id=#{e_id}
+		</if>
+	</select>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="Employ" parameterType="java.lang.Integer">
+		select e_id,e_position,e_validtime,e_amount,e_salary,e_detail,e_addr,todoa from Employ 
+		<if test="start!=null and start!='' and end!=null and end!=''">
+			 order by e_id desc limit #{start},#{end} 
+		</if>
+	</select>
+	
+	 <select id="findEmployByTime" resultType="Employ">
+		select e_id,e_position,e_validtime,e_amount,e_salary,e_detail,e_addr,todoa from Employ 
+			where e_validtime<=NOW()
+	</select>
+	
+	<update id="updateEmployByTime" parameterType="Employ">
+		update Employ set todoa=#{todoa} where e_id=#{e_id}
+	</update>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="Employ" resultType="java.lang.Integer">
+		select ceil(count(1)/#{pageSize}) tp from Employ
+	</select>  
+	
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from Employ
+	</select>
+	
+	<insert id="addEmploy"  parameterType="Employ">
+		insert into employ(e_position,e_validtime,e_amount,e_salary,e_detail,e_addr,todoa) values(#{e_position},
+		#{e_validtime},#{e_amount},#{e_salary},#{e_detail},#{e_addr},#{todoa})
+	</insert>
+	
+	<update id="updateEmployById" parameterType="Employ">
+		update Employ set e_position=#{e_position},e_validtime=#{e_validtime},e_amount=#{e_amount},
+		e_salary=#{e_salary},e_detail=#{e_detail},e_addr=#{e_addr},todoa=#{todoa} where e_id=#{e_id}
+	</update>
+	
+	
+	<delete id="deleteEmployById" parameterType="java.util.List">
+		delete from Employ where e_id in
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.e_id}
+		</foreach>
+	</delete>
+</mapper>

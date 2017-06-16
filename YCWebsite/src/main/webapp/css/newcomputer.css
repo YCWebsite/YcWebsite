@@ -112,6 +112,10 @@ body{
     left:72%;
     top:0px;
 }
+.li8{
+    left:84%;
+    top:0px;
+}
 
 #banner{
     padding-top: 60px;
@@ -587,10 +591,8 @@ body{
     margin-top:10px;
 }
 #main  .main_L_d{
-    border: 1px solid #dadada;
     border-top: 4px solid #03447C;
     margin-top: 11px;
-
 }
 
 .teacher_title{

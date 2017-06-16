@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.yc.mapper.ActivitiesMapper">  
+	
+	<!-- 加入二级缓存 -->
+	<cache eviction="FIFO" flushInterval="60000" size="2048" readOnly="true"></cache>
+	<!-- 加入redis缓存 -->
+	<!-- 	<cache type="com.yc.redis.RedisCache"></cache> -->
+
+	<select id="selectAllActivities" resultType="Activities" resultMap="activitiesMap">    
+		select ac_id,ac_time,ac_illus,ac_pic from Activities
+		<if test="ac_id!=null">
+			where ac_id=#{ac_id}
+		</if>
+	</select> 
+	<resultMap type="Activities" id="activitiesMap">
+		<!-- id表示配置的是数据表中主键的属性 -->
+		<id property="ac_id" column="ac_id"/>
+		<!-- result表示配置的是数据表中非主键的属性 -->
+		<result property="ac_time" column="ac_time"/>
+		<result property="ac_illus" column="ac_illus"/>
+		<result property="ac_pic" column="ac_pic"/>
+	</resultMap>
+	
+	<insert id="addActivities" parameterType="Activities">
+		insert into Activities(ac_time,ac_illus,ac_pic) values(#{ac_time},#{ac_illus},#{ac_pic})
+	</insert>
+	
+	<update id="updateActivitiesById" parameterType="Activities">
+		update Activities set ac_time=#{ac_time},ac_illus=#{ac_illus}
+		<if test="ac_pic!='' and ac_pic!=null">
+			,ac_pic=#{ac_pic} 
+		</if>
+		where ac_id=#{ac_id}
+	</update>
+	
+	<delete id="deleteActivitiesById" parameterType="java.util.List">
+		delete from Activities where ac_id in 
+		<foreach collection="list" item="obj" index="index" open="(" close=")" separator=",">
+				#{obj.ac_id}
+		</foreach>
+	</delete>
+	
+	<!-- 分页 -->
+	<select id="findByPages" resultType="Activities" parameterType="java.lang.Integer">
+		select ac_id,ac_time,ac_illus,ac_pic from Activities order by ac_id desc limit #{start},#{end} 
+	</select>
+	
+	<!-- 获取总页数-->
+	<select id="getTotalPage" parameterType="Activities" resultType="java.lang.Integer">
+		select ceil(count(1)/${pageSize}) tp from Activities
+	</select>  
+	
+	<!-- 获取总条数-->
+	<select id="getTotalSize" resultType="java.lang.Integer">
+		select count(*) from Activities
+	</select>
+	
+</mapper>
+
